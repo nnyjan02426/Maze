@@ -60,10 +60,10 @@ class maze{
 
         void create_maze(){
             maze_map = new bool *[maze_len];
-            cout << "Enter " << maze_width << " data for each row." << endl;
+            cout << "Enter " << maze_width << " data for each column." << endl;
 
             for(int i=0; i<maze_len; i++){
-                cout << "row [" << i << "]: ";
+                cout << "column [" << i << "]: ";
                 maze_map[i] = new bool[maze_width];
                 for(int j=0; j<maze_width; j++){
                     cin >> maze_map[i][j];
@@ -88,7 +88,7 @@ class maze{
             cout << "Maze created." << endl;
         }
 
-        void find_road(){ //找出可走的方向，回傳方向數，並將可走方向存於current_directions
+        void find_road(){ //找出可走的方向，並將可走方向存於current_directions
             path_count = 0;
             //若此為已走過的岔路口，則可走方向已存在crossroad_top
             if(crossroad_top && (current_x==crossroad_top->x)&&(current_y==crossroad_top->y)){
@@ -98,8 +98,7 @@ class maze{
                 path_count = crossroad_top->path_count;
 
                 //若岔路的路皆已走過，則將此岔路從stack中刪除
-                if(crossroad_top->path_count){
-                    Stack *current_crossroad = crossroad_top;
+                if(!path_count){
                     if(crossroad_top->below){
                         crossroad_top = crossroad_top->below;
                     }
@@ -107,7 +106,6 @@ class maze{
                         crossroad_top = NULL;
                         no_crossroad = 1;
                     }
-                    delete current_crossroad;
                 }
             }
             else{ //若未走過，則找出可走的路
@@ -295,7 +293,7 @@ class maze{
         }
 
         void print_solution(){
-            cout << "Maze solution: (1=road, 0=wall)" << endl;
+            cout << "Maze solution: (1=solution)" << endl;
             Stack *previous_path;
 
             //建立一陣列，存取通往終點路徑的各座標
@@ -330,7 +328,6 @@ class maze{
 };
 
 int main(){
-    int path_count;
     maze Maze;
     Maze.get_maze_size();
     Maze.create_maze(); //建立迷宮, 並使使用者輸入迷宮樣式
@@ -350,7 +347,6 @@ int main(){
         else{
             Maze.move_ahead();
         }
-        cout << endl;//testing
     }
 
     if(Maze.at_end()){ //若在終點
